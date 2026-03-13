@@ -41,14 +41,14 @@ inspired by [samoshkin/tmux-config](https://github.com/samoshkin/tmux-config) an
 
 ```mermaid
 flowchart LR
-    K["🖥️ Kitty\nSuper+key"] -- "sends \\x00 + key\n(Ctrl-Space prefix)" --> T{"🔀 tmux prefix+key"}
-    T -- "h/j/k/l\n(is vim?)" --> Check{vim running\nin pane?}
-    Check -- "yes" --> N["📝 Neovim\nC-h/j/k/l\nnavigate splits"]
-    Check -- "no" --> P["📐 tmux\nselect-pane"]
-    T -- "v / s" --> Split["split pane\n(inherits cwd)"]
-    T -- "t / w / n / p" --> Win["window\nmanagement"]
-    T -- "f / W / S" --> Fzf["fzf popup\n(fuzzy find)"]
-    T -- "*" --> Pass["pass + fzf\n(password manager)"]
+    K["🖥️ Kitty Super+key"] -- "sends \\x00 + key (Ctrl-Space prefix)" --> T{"🔀 tmux prefix+key"}
+    T -- "h/j/k/l (is vim?)" --> Check{vim running in pane?}
+    Check -- "yes" --> N["📝 Neovim\nC-h/j/k/l navigate splits"]
+    Check -- "no" --> P["📐 tmux select-pane"]
+    T -- "v / s" --> Split["split pane (inherits cwd)"]
+    T -- "t / w / n / p" --> Win["window management"]
+    T -- "f / W / S" --> Fzf["fzf popup (fuzzy find)"]
+    T -- "*" --> Pass["pass + fzf (password manager)"]
 ```
 
 you press `Super+h` in kitty. kitty sends `\x00h` (Ctrl-Space + h). tmux receives it as `prefix h`, checks if the active pane is vim. if yes, forwards `C-h` so vim-tmux-navigator handles it. if no, tmux moves pane focus. seamless across vim splits and tmux panes.
