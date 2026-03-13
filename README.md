@@ -60,12 +60,17 @@ no prefix key. no mode switching. no thinking.
 ### `~/getting-started`
 
 ```bash
-# one-liner
+curl -fsSL https://raw.githubusercontent.com/shaiknoorullah/tmux-config/main/install.sh | bash
+```
+
+that's it. the installer clones the repo, installs dependencies, and sets everything up interactively.
+
+if you prefer to clone first:
+
+```bash
 git clone https://github.com/shaiknoorullah/tmux-config.git ~/tmux-config
 cd ~/tmux-config && ./install.sh
 ```
-
-that's it. the installer walks you through everything interactively.
 
 #### what the installer does
 

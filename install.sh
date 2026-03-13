@@ -4,13 +4,34 @@
 # ║  https://github.com/shaiknoorullah/tmux-config                     ║
 # ╚══════════════════════════════════════════════════════════════════════╝
 #
-# usage: ./install.sh [--deps-only | --no-deps | --uninstall | --help]
+# one-liner:
+#   curl -fsSL https://raw.githubusercontent.com/shaiknoorullah/tmux-config/main/install.sh | bash
+#
+# or clone first:
+#   git clone https://github.com/shaiknoorullah/tmux-config.git ~/tmux-config
+#   cd ~/tmux-config && ./install.sh
+#
+# flags: --deps-only | --no-deps | --uninstall | --help
 
 set -euo pipefail
 
-REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_URL="https://github.com/shaiknoorullah/tmux-config.git"
+CLONE_DIR="$HOME/tmux-config"
 TMUX_DIR="$HOME/.config/tmux"
 TPM_DIR="$TMUX_DIR/plugins/tpm"
+
+# ── Bootstrap: clone repo if running from curl pipe ───────────────────
+# Detect if we're inside the repo or piped from curl/wget
+REPO_DIR=""
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd 2>/dev/null || echo "")"
+
+if [[ -n "$SCRIPT_DIR" ]] && [[ -f "$SCRIPT_DIR/tmux.conf" ]]; then
+    # Running from inside cloned repo
+    REPO_DIR="$SCRIPT_DIR"
+else
+    # Running from curl pipe or outside repo — need to clone
+    REPO_DIR="$CLONE_DIR"
+fi
 
 # ── Terminal Colors ───────────────────────────────────────────────────
 readonly R=$'\033[0m'     # reset
@@ -344,6 +365,26 @@ summary() {
     printf "\n"
 }
 
+# ── Clone (if needed) ─────────────────────────────────────────────────
+clone_repo() {
+    step "clone"
+
+    if [[ -d "$REPO_DIR/.git" ]]; then
+        ok "repo already at $(dim "$REPO_DIR")"
+        return 0
+    fi
+
+    if ! has git; then
+        err "git is required to clone the repo"
+        printf "     ${D}install git and try again${R}\n"
+        exit 1
+    fi
+
+    inf "cloning into $(dim "$REPO_DIR")..."
+    git clone "$REPO_URL" "$REPO_DIR" 2>/dev/null
+    ok "cloned"
+}
+
 # ── Main ──────────────────────────────────────────────────────────────
 banner
 
@@ -355,6 +396,7 @@ if [[ "$DEPS_ONLY" == true ]]; then
 fi
 
 [[ "$NO_DEPS" != true ]] && install_deps
+clone_repo
 link_config
 install_tpm
 reload_tmux
