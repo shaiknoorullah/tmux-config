@@ -66,10 +66,12 @@ no prefix key. no mode switching. no thinking.
 5. reload everything
 
 ```bash
-# clone
-git clone https://github.com/shaiknoorullah/tmux-config.git ~/.config/tmux
+# clone and install (handles everything)
+git clone https://github.com/shaiknoorullah/tmux-config.git ~/tmux-config
+cd ~/tmux-config && ./install.sh
 
-# install TPM if you don't have it
+# or, do it manually:
+git clone https://github.com/shaiknoorullah/tmux-config.git ~/.config/tmux
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
 # install plugins (inside tmux)
@@ -82,6 +84,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 # tmux: prefix + R
 # kitty: ctrl+shift+f5
 ```
+
+the installer detects your package manager, prompts for optional dependencies, backs up any existing config, symlinks the repo, installs TPM + all plugins, and reloads tmux. run `./install.sh --help` for options.
 
 ---
 
@@ -155,7 +159,9 @@ mouse drag copies to clipboard without exiting copy mode. scroll is 2 lines per 
 | Key | What it does |
 |---|---|
 | `d` | detach |
-| `b` | open browser session (zen-browser) |
+| `q` | power menu (detach, kill server, rename, sessions) |
+| `b` | zen tab switcher (fzf popup via brotab) |
+| `B` | open browser session (zen-browser) |
 | `*` | password manager (pass + fzf popup) |
 | `R` | reload config |
 | `E` | refresh SSH/display environment |
@@ -333,7 +339,7 @@ works on wayland (swaync) and X11 (dunst). no dbus hacks.
 | [tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) | — | sane defaults |
 | [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) | `prefix+C-s` / `prefix+C-r` | persist sessions across restarts |
 | [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) | — | auto-save/restore |
-| [tmux-sessionx](https://github.com/omerxx/tmux-sessionx) | `prefix+o` | session manager with preview |
+| [tmux-sessionx](https://github.com/omerxx/tmux-sessionx) | `prefix+o` | session manager with preview + zoxide |
 | [tmux-project](https://github.com/sei40kr/tmux-project) | — | project-based sessions |
 | [tmux-fzf](https://github.com/sainnhe/tmux-fzf) | `prefix+f/W/S/C/K` | fzf for everything tmux |
 | [extrakto](https://github.com/laktak/extrakto) | `prefix+e` | extract text from pane output |
@@ -343,7 +349,7 @@ works on wayland (swaync) and X11 (dunst). no dbus hacks.
 | [tmux-command-palette](https://github.com/lost-melody/tmux-command-palette) | `prefix+?` | keybinding cheatsheet |
 | [tmux-task-monitor](https://github.com/YlanAllouche/tmux-task-monitor) | `prefix+T` | process monitor popup |
 | [tmux-notify](https://github.com/rickstaa/tmux-notify) | `prefix+m` | desktop notifications for pane tasks |
-| [tmux-browser](https://github.com/ofirgall/tmux-browser) | `prefix+b` | browser session management |
+| [tmux-browser](https://github.com/ofirgall/tmux-browser) | `prefix+B` | browser session management |
 
 ---
 
@@ -403,7 +409,9 @@ if you're on hyprland, move lockscreen from `Super+L` to `Super+Escape` in your 
 | `timewarrior` | elapsed timer in focus dashboard |
 | `gh` | PR count widget |
 | `tmuxinator` | declarative project layouts |
-| `brotab` | browser tab management (tmux-browser) |
+| `brotab` | browser tab management (tmux-browser + zen tab switcher) |
+| `exa` / `eza` | sessionx directory preview |
+| `zoxide` | sessionx smart directory search |
 
 ---
 
