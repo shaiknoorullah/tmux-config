@@ -59,33 +59,54 @@ no prefix key. no mode switching. no thinking.
 
 ### `~/getting-started`
 
-1. clone the repo
-2. install dependencies
-3. install TPM plugins
-4. add kitty Super key mappings
-5. reload everything
-
 ```bash
-# clone and install (handles everything)
+# one-liner
 git clone https://github.com/shaiknoorullah/tmux-config.git ~/tmux-config
 cd ~/tmux-config && ./install.sh
+```
 
-# or, do it manually:
+that's it. the installer walks you through everything interactively.
+
+#### what the installer does
+
+1. **detects your package manager** — apt, dnf, pacman, zypper, apk, brew
+2. **installs required deps** — tmux, fzf, git, clipboard tool (xclip/xsel/wl-copy)
+3. **prompts for optional deps** — each one explains what it enables, you pick which to install
+4. **backs up existing config** — if `~/.config/tmux` exists, moves it to `~/.config/tmux.bak.<timestamp>`
+5. **symlinks this repo** — `~/tmux-config` → `~/.config/tmux` (your repo stays where you cloned it)
+6. **installs TPM + all 14 plugins** — no manual `prefix+I` needed
+7. **reloads tmux** — if tmux is already running, applies the new config immediately
+
+if you already have a symlink pointing to this repo, it skips steps 4-5. if the symlink points somewhere else, it asks before replacing.
+
+#### installer flags
+
+| Flag | What it does |
+|------|-------------|
+| `--deps-only` | install dependencies, don't touch config or plugins |
+| `--no-deps` | skip dependency checks, just link config + install plugins |
+| `--uninstall` | remove the symlink, offer to restore backup |
+| `--help` | show usage |
+
+#### manual install
+
+if you don't trust scripts (respect), do it by hand:
+
+```bash
+# clone
 git clone https://github.com/shaiknoorullah/tmux-config.git ~/.config/tmux
+
+# install TPM
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
 # install plugins (inside tmux)
 # prefix + I
 
-# add kitty mappings (append to ~/.config/kitty/kitty.conf)
-# see the kitty section below
+# add kitty mappings (see the kitty section below)
 
-# reload
-# tmux: prefix + R
-# kitty: ctrl+shift+f5
+# reload tmux
+# prefix + R
 ```
-
-the installer detects your package manager, prompts for optional dependencies, backs up any existing config, symlinks the repo, installs TPM + all plugins, and reloads tmux. run `./install.sh --help` for options.
 
 ---
 
