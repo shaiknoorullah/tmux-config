@@ -5,14 +5,12 @@
 </p>
 
 <p align="center">
-
-![tmux](https://img.shields.io/badge/tmux-3.2+-1BB91F?style=flat-square&logo=tmux&logoColor=white)
-![Shell](https://img.shields.io/badge/shell-bash-4EAA25?style=flat-square&logo=gnu-bash&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
-![Wayland](https://img.shields.io/badge/wayland-%E2%9C%93-yellow?style=flat-square)
-![X11](https://img.shields.io/badge/x11-%E2%9C%93-yellow?style=flat-square)
-![works on my machine](https://img.shields.io/badge/works-on%20my%20machine-success?style=flat-square)
-
+  <img src="https://img.shields.io/badge/tmux-3.2+-1BB91F?style=flat-square&logo=tmux&logoColor=white" alt="tmux" />
+  <img src="https://img.shields.io/badge/shell-bash-4EAA25?style=flat-square&logo=gnu-bash&logoColor=white" alt="Shell" />
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/wayland-%E2%9C%93-yellow?style=flat-square" alt="Wayland" />
+  <img src="https://img.shields.io/badge/x11-%E2%9C%93-yellow?style=flat-square" alt="X11" />
+  <img src="https://img.shields.io/badge/works-on%20my%20machine-success?style=flat-square" alt="works on my machine" />
 </p>
 
 **three-layer navigation. zero prefix dance.** kitty captures Super key, sends it as `Ctrl-Space` prefix to tmux, tmux routes it to neovim if vim is focused. one key does the right thing everywhere.
