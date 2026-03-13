@@ -41,7 +41,7 @@ inspired by [samoshkin/tmux-config](https://github.com/samoshkin/tmux-config) an
 
 ```mermaid
 flowchart LR
-    K["🖥️ Kitty\nSuper+key"] -- "sends \\x00 + key\n(Ctrl-Space prefix)" --> T{"🔀 tmux\nprefix+key"}
+    K["🖥️ Kitty\nSuper+key"] -- "sends \\x00 + key\n(Ctrl-Space prefix)" --> T{"🔀 tmux prefix+key"}
     T -- "h/j/k/l\n(is vim?)" --> Check{vim running\nin pane?}
     Check -- "yes" --> N["📝 Neovim\nC-h/j/k/l\nnavigate splits"]
     Check -- "no" --> P["📐 tmux\nselect-pane"]
