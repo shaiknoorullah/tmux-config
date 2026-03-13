@@ -43,7 +43,7 @@ inspired by [samoshkin/tmux-config](https://github.com/samoshkin/tmux-config) an
 flowchart LR
     K["🖥️ Kitty Super+key"] -- "sends \\x00 + key (Ctrl-Space prefix)" --> T{"🔀 tmux prefix+key"}
     T -- "h/j/k/l (is vim?)" --> Check{vim running in pane?}
-    Check -- "yes" --> N["📝 Neovim\nC-h/j/k/l navigate splits"]
+    Check -- "yes" --> N["📝 Neovim\ C-h/j/k/l navigate splits"]
     Check -- "no" --> P["📐 tmux select-pane"]
     T -- "v / s" --> Split["split pane (inherits cwd)"]
     T -- "t / w / n / p" --> Win["window management"]
