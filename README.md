@@ -23,16 +23,34 @@ inspired by [samoshkin/tmux-config](https://github.com/samoshkin/tmux-config) an
 
 ---
 
+### `~/features`
+
+- **Super key navigation** — `Super+h/j/k/l` moves between tmux panes and neovim splits seamlessly. no prefix, no thinking.
+- **vim-tmux-navigator** — detects if the active pane is vim. same key, right behavior.
+- **fzf everywhere** — fuzzy find windows, sessions, commands, keybindings, tmuxinator projects. all in popups.
+- **ADHD focus dashboard** — status bar shows taskwarrior active task, timewarrior elapsed timer, tracking state. green when focused, red when you're slacking.
+- **color-coded git** — branch icon changes color based on sync state. synced, ahead, behind, diverged — at a glance.
+- **password manager** — `prefix+*` opens fzf popup over your `pass` store. copies to clipboard, auto-clears. nothing in history.
+- **smart clipboard** — yank chain: `wl-copy` → `xsel` → `xclip` → OSC 52. works locally, over SSH, on wayland, on X11.
+- **nested sessions** — `F12` disables local keys, passes everything to remote tmux. status grays out. press again to restore.
+- **auto-hide status** — tmux status bar hides when neovim is focused. no double statusline.
+- **desktop notifications** — monitor a pane, get notified when the build finishes. wayland and X11.
+- **15 plugins** — session persistence, text extraction, hint copy, command palette, browser integration. all configured.
+
+---
+
 ### `~/how-it-works`
 
-```
- kitty                    tmux                         neovim
-┌──────────┐          ┌──────────────┐           ┌──────────────┐
-│ Super+h  │──\x00h──▸│ prefix+h     │──is vim?──▸│ C-h (navigate│
-│ Super+v  │──\x00v──▸│ prefix+v     │  no: move  │  vim split)  │
-│ Super+t  │──\x00t──▸│ prefix+t     │  pane      │              │
-│  ...     │          │  ...         │            │              │
-└──────────┘          └──────────────┘           └──────────────┘
+```mermaid
+flowchart LR
+    K["🖥️ Kitty\nSuper+key"] -- "sends \\x00 + key\n(Ctrl-Space prefix)" --> T{"🔀 tmux\nprefix+key"}
+    T -- "h/j/k/l\n(is vim?)" --> Check{vim running\nin pane?}
+    Check -- "yes" --> N["📝 Neovim\nC-h/j/k/l\nnavigate splits"]
+    Check -- "no" --> P["📐 tmux\nselect-pane"]
+    T -- "v / s" --> Split["split pane\n(inherits cwd)"]
+    T -- "t / w / n / p" --> Win["window\nmanagement"]
+    T -- "f / W / S" --> Fzf["fzf popup\n(fuzzy find)"]
+    T -- "*" --> Pass["pass + fzf\n(password manager)"]
 ```
 
 you press `Super+h` in kitty. kitty sends `\x00h` (Ctrl-Space + h). tmux receives it as `prefix h`, checks if the active pane is vim. if yes, forwards `C-h` so vim-tmux-navigator handles it. if no, tmux moves pane focus. seamless across vim splits and tmux panes.
@@ -51,7 +69,7 @@ no prefix key. no mode switching. no thinking.
 
 ```bash
 # clone
-git clone https://github.com/shaiknoorullah/tmux.git ~/.config/tmux
+git clone https://github.com/shaiknoorullah/tmux-config.git ~/.config/tmux
 
 # install TPM if you don't have it
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
@@ -187,45 +205,45 @@ pass generate web/reddit 24
 
 **position:** bottom. transparent background. respects your terminal theme.
 
-```
- 󰤂 main   1 zsh   2 nvim   3 logs       󰔱 [work] configure pre-commit 󱎫 0:45  󱍸 main   2   host
-```
-
-auto-hides when neovim is focused (no double statusline). `prefix + `` ` to force toggle.
+auto-hides when neovim is focused (no double statusline). `` prefix+` `` to force toggle.
 
 #### left side
 
-- `󰠠` (orange) when prefix is active, `󰤂` (dimmed) when idle
-- session name in purple
+| Element | Description |
+|---|---|
+| prefix icon | orange when prefix active, dimmed when idle |
+| session name | purple — which session you're in |
 
 #### window list
 
-- `` green dot + bold for active window
-- `󰁯` marker on last-visited window
-- `󰁌` orange icon when pane is zoomed
-- inactive windows dimmed
+| Element | Description |
+|---|---|
+| active window | green dot + bold name |
+| last-visited | amber marker for quick `prefix+p` reference |
+| zoomed | orange icon when pane is zoomed |
+| inactive | dimmed text |
 
 #### right side
 
-| Widget | Icon | What it shows | Why it's here (not in waybar) |
-|---|---|---|---|
-| keys-off | `󰌾 OFF` | F12 nested mode active | tmux-specific state |
-| focus | `󰔱` / `󰏤` | tracking status | green = timew active, red = not tracking (nudge) |
-| context | `[work]` | taskwarrior context | which filter set is active |
-| task | description | active/next task | what you should be doing right now |
-| timer | `󱎫 H:MM` | timewarrior elapsed | how long you've been at it |
-| git | `󱍸` / `󰜷` / `󰜮` / `󰕚` | branch + sync status | pane-specific repo (waybar can't know this) |
-| PRs | `` | open PR count | repo-specific, cached 60s |
-| host | `` | hostname | which machine you're on |
-
-#### git status icons
-
-| Icon | Color | Meaning |
+| Widget | Description | Why it's here (not in waybar) |
 |---|---|---|
-| `󱍸` | green | synced with upstream |
-| `󰜷` | yellow | ahead — commits to push |
-| `󰜮` | red | behind — pull needed |
-| `󰕚` | purple | diverged — rebase time |
+| **keys-off** | red `OFF` when F12 nested mode is active | tmux-specific state |
+| **focus** | green = timew tracking, red = not tracking (nudge) | ADHD accountability |
+| **context** | `[work]` — taskwarrior context | which filter set is active |
+| **task** | active/next task description | what you should be doing right now |
+| **timer** | `H:MM` timewarrior elapsed | how long you've been at it |
+| **git** | branch + sync status (icon changes color) | pane-specific repo — waybar can't know this |
+| **PRs** | open PR count, cached 60s | repo-specific developer context |
+| **host** | hostname | which machine (essential for SSH) |
+
+#### git sync states
+
+| State | Color | Meaning |
+|---|---|---|
+| synced | ![#50fa7b](https://img.shields.io/badge/-%23%2350fa7b-50fa7b?style=flat-square) green | up to date with upstream |
+| ahead | ![#f5d547](https://img.shields.io/badge/-%23%23f5d547-f5d547?style=flat-square) yellow | local commits to push |
+| behind | ![#ff4d4d](https://img.shields.io/badge/-%23%23ff4d4d-ff4d4d?style=flat-square) red | remote has commits you don't |
+| diverged | ![#bd93f9](https://img.shields.io/badge/-%23%23bd93f9-bd93f9?style=flat-square) purple | both ahead and behind — rebase time |
 
 ---
 
@@ -233,19 +251,29 @@ auto-hides when neovim is focused (no double statusline). `prefix + `` ` to forc
 
 **dracula+** — balanced warm and cool. 3 cool, 3 warm, 3 neutral. no muddy earth tones. no washed-out pastels.
 
-```
- cool                warm                neutral
-┌────────────┐      ┌────────────┐      ┌────────────┐
-│ #50fa7b    │      │ #ff9e3b    │      │ #f8f8f2    │
-│ neon green │      │ orange     │      │ foreground │
-├────────────┤      ├────────────┤      ├────────────┤
-│ #bd93f9    │      │ #ff4d4d    │      │ #1a1a2e    │
-│ purple     │      │ red        │      │ dark bg    │
-├────────────┤      ├────────────┤      ├────────────┤
-│ #6a8cff    │      │ #f5d547    │      │ #585880    │
-│ blue       │      │ yellow     │      │ muted      │
-└────────────┘      └────────────┘      └────────────┘
-```
+#### cool
+
+| Color | Hex | Role |
+|---|---|---|
+| ![#50fa7b](https://img.shields.io/badge/-____-50fa7b?style=flat-square) | `#50fa7b` | neon green — active window, focused, git synced |
+| ![#bd93f9](https://img.shields.io/badge/-____-bd93f9?style=flat-square) | `#bd93f9` | purple — session name, pane borders, git diverged |
+| ![#6a8cff](https://img.shields.io/badge/-____-6a8cff?style=flat-square) | `#6a8cff` | blue — git branch name, hostname |
+
+#### warm
+
+| Color | Hex | Role |
+|---|---|---|
+| ![#ff9e3b](https://img.shields.io/badge/-____-ff9e3b?style=flat-square) | `#ff9e3b` | orange — prefix active, timer, PR icon |
+| ![#ff4d4d](https://img.shields.io/badge/-____-ff4d4d?style=flat-square) | `#ff4d4d` | red — unfocused nudge, git behind, keys-off |
+| ![#f5d547](https://img.shields.io/badge/-____-f5d547?style=flat-square) | `#f5d547` | yellow — git ahead, copy match highlight |
+
+#### neutral
+
+| Color | Hex | Role |
+|---|---|---|
+| ![#f8f8f2](https://img.shields.io/badge/-____-f8f8f2?style=flat-square) | `#f8f8f2` | foreground — task text, default content |
+| ![#1a1a2e](https://img.shields.io/badge/-____-1a1a2e?style=flat-square) | `#1a1a2e` | dark — F12 off mode bg, selection bg |
+| ![#585880](https://img.shields.io/badge/-____-585880?style=flat-square) | `#585880` | muted — inactive windows, borders, dimmed text |
 
 to change the theme: edit the color variables at the top of `tmux.conf` and the hardcoded hex values in `scripts/`. scripts emit their own tmux color codes for per-state coloring.
 
@@ -255,7 +283,7 @@ to change the theme: edit the color variables at the top of `tmux.conf` and the 
 
 `F12` toggles local keys off. everything passes through to the remote tmux.
 
-- status bar grays out, shows `󰌾 OFF`
+- status bar grays out, shows `OFF` in red
 - press `F12` again to restore local control
 - remote sessions auto-detect SSH and move status bar to the top
 
@@ -365,7 +393,7 @@ if you're on hyprland, move lockscreen from `Super+L` to `Super+Escape` in your 
 | `tmux` >= 3.2 | the multiplexer |
 | `fzf` | fuzzy finding (tmux-fzf, extrakto, pass-menu) |
 | `wl-clipboard` or `xclip` | clipboard (wayland or X11) |
-| Nerd Font | icons everywhere |
+| Nerd Font | icons in the status bar |
 
 #### optional
 
@@ -395,7 +423,7 @@ if you're on hyprland, move lockscreen from `Super+L` to `Super+Escape` in your 
 
 **plugins not loading** — `prefix+I` to install. if TPM is missing: `git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm`
 
-**nested tmux keys not passing through** — press `F12`. status should gray out and show `󰌾 OFF`. press `F12` again to restore.
+**nested tmux keys not passing through** — press `F12`. status should gray out and show `OFF`. press `F12` again to restore.
 
 ---
 
@@ -415,7 +443,5 @@ PRs welcome. keep it minimal, keep it mnemonic. if you add a keybinding, it shou
 ---
 
 <p align="center">
-  <code>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</code>
-  <br><br>
   <a href="https://github.com/shaiknoorullah">@shaiknoorullah</a> · prefix is dead, long live Super
 </p>
