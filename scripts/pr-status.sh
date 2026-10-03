@@ -13,8 +13,8 @@ cd "$pane_path" 2>/dev/null || exit 0
 git rev-parse --git-dir >/dev/null 2>&1 || exit 0
 
 repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
-cache_dir="/tmp/tmux-pr-cache"
-mkdir -p "$cache_dir"
+cache_dir="${XDG_RUNTIME_DIR:-/tmp}/tmux-pr-cache-$(id -u)"
+mkdir -p -m 700 "$cache_dir"
 cache_file="$cache_dir/$(printf %s "$repo_root" | md5sum | cut -d' ' -f1)"
 
 if [ -f "$cache_file" ]; then

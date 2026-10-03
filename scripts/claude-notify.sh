@@ -30,11 +30,17 @@ cwd=$(field .cwd)
 location=$(tmux display-message -p -t "$TMUX_PANE" '#S:#I #W' 2>/dev/null)
 project=${cwd:+$(basename "$cwd")}
 
-summary="$title${project:+ · $project}"
-body="$message${location:+\n<i>tmux $location</i>}"
+# Untrusted text (model/tool output): neutralise notification markup (&, <, >)
+# and tmux format expansion (#(cmd), #{...}) before it reaches either sink.
+pango_esc() { local s=$1; s=${s//&/"&amp;"}; s=${s//</"&lt;"}; s=${s//>/"&gt;"}; printf '%s' "$s"; }
+tmux_message=${message//\#/##}
+nl=$'\n'
+
+summary="$(pango_esc "$title${project:+ · $project}")"
+body="$(pango_esc "$message")${location:+$nl<i>tmux $(pango_esc "$location")</i>}"
 
 # Visual cue in tmux too (shows on whichever client is viewing that session)
-tmux display-message -t "$TMUX_PANE" -d 4000 "󰚩 $message" 2>/dev/null
+tmux display-message -t "$TMUX_PANE" -d 4000 "󰚩 $tmux_message" 2>/dev/null
 
 # Pick the tmux client to jump: one already on the pane's session, else the
 # most recently active one.
@@ -77,7 +83,7 @@ focus_terminal() {
     action=$(notify-send --app-name="Claude Code" --icon="$icon" \
         --urgency=normal --expire-time=10000 \
         --action=default=Focus --wait \
-        "$summary" "$(printf '%b' "$body")" 2>/dev/null)
+        "$summary" "$body" 2>/dev/null)
     if [[ "$action" == "default" ]]; then
         read -r client client_pid < <(pick_client)
         [[ -n "$client_pid" ]] && focus_terminal "$client_pid"
